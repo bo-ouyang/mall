@@ -1,0 +1,139 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户中心 </title>
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/general.css" />
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/css/user.css" />
+    <script type="text/javascript" src="/static/theme/frontend/default/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/juicer.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/general.js"></script>
+    <script type="text/javascript">
+        var userbar = "{:url('User/userbar')}";
+        var cartbar = "{:url('User/cartbar')}";
+        $(function(){
+            $("#exp-bar").animate({width: $('#exp-bar').data('pct')}, 1500);
+        });
+    </script>
+</head>
+<body>
+<include file="library/head"/>
+<div class="loc w1100">
+    <div><a href="{::url('Index/index')}">网站首页</a><b>&gt;</b><font>用户中心</font></div>
+</div>
+<!-- 主体开始 -->
+<div class="container w1100 mt10">
+    <div class="module cut">
+        <include file="library/user_left"/>
+        <!-- 右侧开始 -->
+        <div class="w910 cut">
+            <div class="w660 fl cut">
+                <div class="welcome w658 cut">
+                    <h3>您好<font class="c333 ml5">{$username}</font>，欢迎登陆<font class="ml5"></font></h3>
+                    <p class="remind red"></font>
+                        <a class="ml10" href="{:url('User/security')}"></a>
+                    </p>
+                    <div class="module mt10 cut">
+                        <dl><dt>账户余额：</dt><dd><font class="red"> {$uinfo.balance}</font> </dd></dl>
+                        <dl><dt>积分：</dt><dd><font class="red">{$uinfo.score} </font> </dd></dl>
+                        <dl>
+                            <dt>成长值：</dt>
+                            <dd>
+                                <div class="exp cut">
+                                    <div class="bar fl" id="exp-bar" data-pct="0%"></div>
+                                    <div class="vals c999 fl">{$uinfo.grow_value}</div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl><dt>会员类别：</dt><dd><font>{$uinfo.group_name}</font></dd></dl>
+                        <dl><dt>上次登录：</dt><dd><font class="c999"></font></dd></dl>
+                    </div>
+                </div>
+                <!-- 最近订单开始 -->
+                <div class="w658 mt10 cut">
+                    <h2><a href="{:url('Order/index')}" class="fr">查看全部订单</a>近期订单</h2>
+                    <p class="aln-c pad10 c999">暂无订单</p>
+                </div>
+                <!-- 最近订单结束 -->
+                <!-- 最近收藏开始 -->
+                <div class="w658 mt10 cut">
+                    <h2><a href="http://shop.xinjiu9.com/favorite/index.html" class="fr">查看全部收藏</a>近期收藏</h2>
+                    <p class="aln-c pad10 c999">暂无收藏</p>
+                </div>
+                <!-- 最近收藏结束 -->
+            </div>
+            <div class="w240 fr cut">
+                <div class="sdcter cut">
+                    <h2 class="srth"><a class="fr" href="http://shop.xinjiu9.com/user/profile.html">编辑</a>个人信息</h2>
+                    <div class="module mt10 cut">
+                        <div class="avatar fl"><img src="http://shop.xinjiu9.com/upload/user/avatar/55c04a4cf9ca3d.jpg" /></div>
+                        <ul>
+                            <li>姓名:<b class="ml5">111</b></li>
+                            <li>手机:<font class="c999 ml5">未设置</font></li>
+                            <li><a href="http://shop.xinjiu9.com/user/logout.html">退出登录</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 历史浏览开始 -->
+                <div class="history sli mt10">
+                    <h2 class="srth">最近浏览</h2>
+                    <dl>
+                        <dt><a href="http://shop.xinjiu9.com/item/1.html"><img alt="Apple iPhone 6s (A1700) 移动联通电信4G手机" src="http://shop.xinjiu9.com/index/img?i=156e2d4fa488d0.jpg&s=50x50" /></a></dt>
+                        <dd class="lt"><a title="Apple iPhone 6s (A1700) 移动联通电信4G手机" href="http://shop.xinjiu9.com/item/1.html">Apple iPhone 6s (A1700) 移动联通电信4G手机</a><p><i>¥</i> 4888.00</p></dd>
+                    </dl>
+                </div>
+                <!-- 历史浏览结束 -->
+            </div>
+        </div>
+        <!-- 右侧结束 -->
+    </div>
+    <div class="cl"></div>
+    <div class="helpper cut">
+        <div class="guarantee radius4 cut">
+            <dl>
+                <dt><i class="g-1 icon"></i></dt>
+                <dt class="mt5">放心购物</dt>
+                <dd class="mt5">正品保障，付款安全</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-2 icon"></i></dt>
+                <dt class="mt5">闪电发货</dt>
+                <dd class="mt5">当日处理，极速配货</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-3 icon"></i></dt>
+                <dt class="mt5">退换承诺</dt>
+                <dd class="mt5">7日以内，尊享退换</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-4 icon"></i></dt>
+                <dt class="mt5">售后无忧</dt>
+                <dd class="mt5">贴心服务，快速响应</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-5 icon"></i></dt>
+                <dt class="mt5">畅想低价</dt>
+                <dd class="mt5">每日促销，折扣不停</dd>
+            </dl>
+        </div>
+        <div class="cl"></div>
+        <div class="helpli cut">
+        </div>
+    </div></div>
+    <!-- 主体结束 -->
+    <div class="cl"></div>
+    <!-- 页脚开始 -->
+    <div class="footer mt20">
+        <div class="links radius4 mt20">
+
+        </div>
+
+    </div>
+    <!-- 页脚结束 -->
+    </body>
+    </html>

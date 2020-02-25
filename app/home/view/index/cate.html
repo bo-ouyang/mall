@@ -1,0 +1,206 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="电脑" />
+    <meta name="description" content="电脑" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/general.css" />
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/category.css" />
+    <script type="text/javascript" src="/static/theme/frontend/default/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/general.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/juicer.js"></script>
+</head>
+<body>
+<include file="library/head"/>
+<div class="loc w1100">
+    <div>
+        <a href="http://shop.xinjiu9.com">网站首页</a>
+        <b>&gt;</b>
+        <font>电脑</font>
+    </div>
+</div>
+<!-- 主体开始 -->
+<div class="container w1100 mt10">
+    <div class="module cut">
+        <!-- 左侧开始 -->
+        <div class="w210 fl cut">
+            <div class="sli mb10">
+                <h2>热门推荐</h2>
+
+                <dl>
+                    <dt class="fl"><a href="http://shop.xinjiu9.com/item/17.html"><img alt="微软 Microsoft Surface Pro 3 平板电脑" src="http://shop.xinjiu9.com/index/img?i=1756e6d909b8a0c.jpg&s=50x50" /></a></dt>
+                    <dd class="lt"><a title="微软 Microsoft Surface Pro 3 平板电脑" href="http://shop.xinjiu9.com/item/17.html">微软 Microsoft Surface Pro 3 ...</a><p><i>¥</i> 4599.00</p></dd>
+                </dl>
+
+            </div>
+            <div class="sli mb10">
+                <h2>最近浏览</h2>
+
+                <dl>
+                    <dt class="fl"><a href="http://shop.xinjiu9.com/item/3.html"><img alt="小米4 MI4 2GB内存版 移动 联通 电信 4G手机" src="http://shop.xinjiu9.com/index/img?i=356e2fa344ec51.jpg&s=50x50" /></a></dt>
+                    <dd class="lt"><a title="小米4 MI4 2GB内存版 移动 联通 电信 4G手机" href="http://shop.xinjiu9.com/item/3.html">小米4 MI4 2GB内存版 移动 联通 电信 4G手机</a><p><i>¥</i> 1299.00</p></dd>
+                </dl>
+
+            </div>
+        </div>
+        <!-- 左侧结束 -->
+        <!-- 右侧开始 -->
+        <div class="w880">
+            <!-- 特价促销开始 -->
+            <div class="recommend mb10 cut">
+
+                <dl>
+                    <dt class="fl"><a href="http://shop.xinjiu9.com/item/17.html"><img width="100" height="100" alt="微软 Microsoft Surface Pro 3 平板电脑" src="http://shop.xinjiu9.com/index/img?i=1756e6d909b8a0c.jpg&s=150x150" /></a></dt>
+                    <dd>
+                        <a title="微软 Microsoft Surface Pro 3 平板电脑" href="http://shop.xinjiu9.com/item/17.html">微软 Microsoft Surface Pro 3 平板电脑</a>
+                        <p class="ori mt10"><i>¥</i> 4699.00</p>
+                        <p class="mt2"><i>¥</i> 4599.00</p>
+                    </dd>
+                </dl>
+
+            </div>
+            <!-- 特价促销结束 -->
+            <!-- 过滤筛选开始 -->
+            <div class="filter cut">
+                <notempty name="data.brand">
+                <div class="ftitem cut">
+                    <h4 class="fl">品牌：</h4>
+                    <div class="ftopt">
+                        <div class="fl"><a <if condition="($data['params']['brand_id'] eq null )">class="cur"</if> href="{:mkUrl('brand_id')}">不限</a></div>
+                        <dl>
+                            <foreach name="data.brand" item="v">
+                                <dd><a  <eq name="data.params.brand_id" value="$v['brand_id']">class="cur"</eq> title="{$v['brand_name']}" href="{:mkUrl('brand_id',$v['brand_id'])}">{$v.brand_name}</a></dd>
+                            </foreach>
+                        </dl>
+                    </div>
+                </div>
+                </notempty>
+                <!--属性循环开始-->
+                <notempty name="data.attr">
+                <foreach name="data.attr" item="v">
+                <div class="ftitem cut">
+                    <h4 class="fl">{$v.name}：</h4>
+                    <div class="ftopt">
+                        <div class="fl"><a <if condition="($data['values'][$v['attr_id']] eq -1) OR ($data['values'] eq null )">class="cur"</if> href="{:mkUrl('attr',array('attr_id'=>$v['attr_id'],'value'=>-1))}">不限</a></div>
+                        <dl>
+                            <foreach name="v.opts" item="vv">
+                                <dd><a  <if condition="($data['values'][$v['attr_id']] eq $vv )">class="cur"</if> href="{:mkUrl('attr',array('attr_id'=>$v['attr_id'],'value'=>$vv))}">{$vv}</a></dd>
+                            </foreach>
+                        </dl>
+                    </div>
+                </div>
+                </foreach>
+                </notempty>
+                <!--属性循环结束-->
+
+                    <div class="ftitem cut">
+                        <h4 class="fl">价格：</h4>
+                        <div class="ftopt">
+                            <div class="fl"><a  <eq name="data.params.price" value="">class="cur"</eq> href="{:mkUrl('price')}">不限</a></div>
+                            <dl>
+                                <foreach name="data.price" item="v">
+                                    <dd><a <eq name="data.params.price" value="$v">class="cur"</eq> title="{$v}" href="{:mkUrl('price',$v)}">{$v}</a></dd>
+                                </foreach>
+                            </dl>
+                        </div>
+                    </div>
+            </div>
+            <!-- 过滤筛选结束 -->
+            <!-- 商品列表开始 -->
+            <div class="module mt10">
+                <div class="display cut">
+                    <div class="seq fl cut">
+                        <ul>
+                            <li class="cur"><a  class="cur" href="{:mkUrl('sort')}">默认排序</a></li>
+                            <li><a href="{:mkUrl('sort',1)}">价格<i class="up icon"></i></a></li>
+                            <li><a href="{:mkUrl('sort',3)}">上架时间<i class="dw icon"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="spt fr cut">
+                        <ul>
+                            <li class="sum c999">共<b class="red">{$data.goods_count}</b>件商品</li>
+                            <li class="flip"><font>&lt;</font><span class="c999">1 / 1</span><font>&gt;</font></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="gli cut">
+                    <ul>
+                        <notempty name="data.goods">
+                        <foreach name="data.goods" item="v">
+                        <li>
+                            <div class="im">
+                                <a href="{::url('Item/index',array('goods_id'=>$v['goods_id']))}">
+                                    <if condition="($v['goods_image'][0] neq null )">
+                                    <img alt="{$v['goods_name']}" src="/static/Uploads/150/{$v['goods_image'][0]}" />
+                                    <else/>
+                                        <img alt="{$v['goods_name']}" src="" />
+                                    </if>
+                                </a>
+                            </div>
+                            <h3><a title="{$v['goods_name']}" href="{::url('Item/index',array('goods_id'=>$v['goods_id']))}">{$v.goods_name}</a></h3>
+                            <p class="price"><i>¥</i> {$v.now_price}</p>
+                        </li>
+                        </foreach>
+                            <else />
+                            <div class="nors mt10 pad10 aln-c c999">抱歉！未找到匹配的商品数据...</div>
+                        </notempty>
+                    </ul>
+                </div>
+                <!-- 页码开始 -->
+                <div class="module aln-c mt20">
+                </div>
+                <!-- 页码结束 -->
+            </div>
+            <!-- 商品列表结束 -->
+        </div>
+        <!-- 右侧结束 -->
+    </div>
+    <div class="cl"></div>
+    <div class="helpper cut">
+        <div class="guarantee radius4 cut">
+            <dl>
+                <dt><i class="g-1 icon"></i></dt>
+                <dt class="mt5">放心购物</dt>
+                <dd class="mt5">正品保障，付款安全</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-2 icon"></i></dt>
+                <dt class="mt5">闪电发货</dt>
+                <dd class="mt5">当日处理，极速配货</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-3 icon"></i></dt>
+                <dt class="mt5">退换承诺</dt>
+                <dd class="mt5">7日以内，尊享退换</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-4 icon"></i></dt>
+                <dt class="mt5">售后无忧</dt>
+                <dd class="mt5">贴心服务，快速响应</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-5 icon"></i></dt>
+                <dt class="mt5">畅想低价</dt>
+                <dd class="mt5">每日促销，折扣不停</dd>
+            </dl>
+        </div>
+        <div class="cl"></div>
+        <div class="helpli cut">
+        </div>
+    </div></div>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<div class="footer mt20">
+    <div class="links radius4 mt20">
+
+    </div>
+
+</div>
+<!-- 页脚结束 -->
+</body>
+</html>

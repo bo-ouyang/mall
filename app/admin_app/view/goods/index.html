@@ -1,0 +1,316 @@
+{include file="library/header" /}
+<ul class="nav nav-tabs">
+    <li class="active"><a href="{:url('shop/goods/index')}">商品列表</a></li>
+    <li><a href="{:url('shop/goods/add')}">新增商品</a></li>
+</ul>
+<form class="well form-inline margin-top-20" method="get" action="{:url('admin/user/index_data')}">
+    分类筛选:
+    <input class="form-control" type="text" name="goods_name" style="width: 200px;" value="" id="goods_cate"
+          >
+    商品名:
+    <input class="form-control" type="text" name="goods_name" style="width: 200px;" value="" id="goods_name"
+           placeholder="商品名称">
+    商品价格:
+    <input class="form-control" type="text" name="start" style="width: 200px;" id="start" value=""
+           placeholder="">
+    -
+    <input class="form-control" type="text" name="end" style="width: 200px;" id="end" value=""
+           placeholder="">
+    <input type="button" class="btn btn-primary" id="queryBtn" value="搜索"/>
+    <a class="btn btn-danger" href="{:url('admin/user/index')}">清空</a>
+</form>
+
+
+<table id="ArbetTable" class="table-striped">
+
+
+</table>
+
+
+<script>
+    $(document).ready(function () {
+        //调用函数，初始化表格
+        initTable();
+        $("#queryBtn").bind("click", function () {
+            var goods_name = $('#goods_name').val();
+            var start = $('#start').val();
+            var end = $('#end').val();
+            $('#ArbetTable').bootstrapTable('refresh', {query: {goods_name: goods_name, start: start, end: end}});
+        });
+        /*$.ajaxSetup({
+            complete:function(xhr) {
+                var row = JSON.parse(xhr.responseText)
+                //console.log(row.rows.length)
+                $(".in_c").text(row.rows.length)
+            }
+        })*/
+    })
+
+    function initTable() {
+        $('#ArbetTable').bootstrapTable({
+            url: "index_data",
+            method: 'get',
+            pagination: true,
+            sidePagination: "server",//分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: 1,
+            pageSize: 10,
+            sortable: true,                     //是否启用排序
+            sortOrder: "desc",                   //排序方式
+            pageList: [10, 25, 40, 60],        //可供选择的每页的行数（*）
+            showColumns: true,                  //是否显示所有的列
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            showExport: true,  //是否显示导出按钮//
+            exportDataType: "basic",
+            exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
+            align: 'left',
+            columns: [
+                {
+                    checkbox: true,
+                    btSelectItem: 'id'
+                },
+                {
+                    field: 'goods_id',
+                    title: 'ID',
+                    sortable: true,//启用排序
+                    width: 60,
+                },
+                {
+                    field: 'goods_name',
+                    title: '产品名称',
+                    editable: true,
+                },
+
+                {
+                    field: 'original_price',
+                    title: '产品价格'
+                },
+                {
+                    field: 'stock_qty',
+                    title: '库存'
+                },
+                {
+                    field: 'goods_image',
+                    title: '图片',
+                    formatter: function (value, row, index) {
+                        return '<img width="100" height="50" src="/uploads/' + value + '">'
+                    }
+                },
+                {
+                    field: 'cate_id',
+                    title: '产品分类'
+                },
+                {
+                    field: 'brand_id',
+                    title: '品牌',
+                    sortable: true,//启用排序
+                },
+                {
+                    field: 'return_status',
+                    title: '退款状态',
+                    formatter: function (value, row, index) {
+                        var id = row.retu_status;
+                        // console.log( id)
+                        if (id == 1) {
+                            return '<input  class="cash_status" id="status' + row.goods_id + '" type="checkbox" data-id="' + row.goods_id + '" value="1" data-status="1" on="0">';
+                        }
+                        if (id == 0) {
+                            return '<input  class="cash_status" id="status' + row.goods_id + '"  type="checkbox" data-id="' + row.goods_id + '" value="0" data-status="0" on="1">';
+                        }
+                    }
+                },
+                {
+                    field: 'new',
+                    title: '新产品',
+                    formatter: function (value, row, index) {
+                        return value === 1 ? '显示' : '不显示';
+                    }
+                },
+                {
+                    field: 'recommend',
+                    title: '是否推荐',
+                    formatter: function (value, row, index) {
+                        return value === 1 ? '显示' : '不显示';
+                    }
+                },
+                {
+                    field: 'bargain',
+                    title: '折扣',
+                    formatter: function (value, row, index) {
+                        return value === 1 ? '显示' : '不显示';
+                    }
+                },
+                {
+                    field: 'bargain_rate',
+                    title: '折扣比例',
+                    formatter: function (value, row, index) {
+                        return value === 1 ? '显示' : '不显示';
+                    }
+                },
+                {
+                    field: 'status',
+                    title: '上架状态',
+                    width:100,
+                    formatter: function (value, row, index) {
+                        return value === 1 ? '显示' : '不显示';
+                    }
+                },
+                {
+                    title: '操作',
+                    width: 220,
+                    formatter: function (value, row, index) {
+                        return '<a class="btn active " title="查上级">编辑商品</a>'
+                            ;
+                    },
+                    events: {
+                        'click a[title=编辑商品]': function (e, value, row, index) {
+
+                            $('#ArbetTable').bootstrapTable('refresh', {query: {user_id: row.id, check: 'up'}});
+                        },
+                       /* 'click a[title=查下级]': function (e, value, row, index) {
+                            $('#ArbetTable').bootstrapTable('refresh', {query: {user_id: row.id, check: 'down'}});
+                        },
+                        'click a[title=拉黑]': function (e, value, row, index) {
+
+                        },*/
+                    },
+
+                },
+            ],
+            onEditableSave: function (field, row, oldValue, $el) {
+                $.ajax({
+                    type: 'post',
+                    url: 'edit_one',
+                    dataType: 'json',
+                    data: {user_login: row.user_login, id: row.id},
+                    success: function (data) {
+                        if (data.status === 'success') {
+                            layer.msg('修改成功', {icon: 1, time: 1500})
+                        }
+                    },
+                    error: function (data) {
+                        if (data.status === 'error') {
+                            layer.msg('修改失败请重试', {icon: 1, time: 1500})
+                        }
+                    }
+                })
+            },
+            onLoadSuccess: function () {
+                $('.cash_status').each(function () {
+                    var id = $(this).data('id');
+                    // var status = $(this).data('status');
+                    var status = $(this).val();
+                    //console.log(status)
+                    $(this).bootstrapSwitch({
+                        onColor: "success",
+                        offColor: "danger",
+                    }).bootstrapSwitch('size', "small").bootstrapSwitch('state', status == 0 ? false : true);
+                });
+
+                // $('[name="mycheckbox"]').bootstrapSwitch('setState', true)
+                $('.cash_status').bootstrapSwitch("onSwitchChange", function (event, state) {
+                    var id = $(this).data('id');
+                    //var status = parseInt($(this).attr('data-status'));
+                    var on = parseInt($(this).attr('on'));
+                    var value = $(this).val();
+                    //console.log(value)
+                    if (value == 0) {
+                        // 修改状态
+                        $.ajax({
+                            url: "retu_on",
+                            type: "post",
+                            dataType: "json",
+                            data: {'id': id, 'on': on},
+                            success: function (data) {
+                                if (data.status === 'success') {
+                                    var tem = '#status' + id
+                                    $(tem).attr("value", 1)
+                                    $(tem).attr("on", 0)
+                                    //$('#status_0').val(1);
+                                    layer.msg('退款成功', {icon: 1, time: 2000})
+                                    // $('#ArbetTable').bootstrapTable('refresh')
+                                }
+                                if (data.status === 'error') {
+                                    layer.msg('退款失败', {icon: 2, time: 2000})
+                                }
+                            },
+                        });
+                    } else {
+                        $.ajax({
+                            url: "retu_on",
+                            type: "post",
+                            dataType: "json",
+                            data: {'id': id, 'on': on},
+                            success: function (data) {
+                                if (data.status === 'success') {
+                                    var tem = '#status' + id
+                                    $(tem).attr("value", 0)
+                                    $(tem).attr("on", 1)
+                                    layer.msg('设置成功', {icon: 1, time: 2000})
+                                }
+                                if (data.status === 'error') {
+                                    layer.msg('设置失败', {icon: 2, time: 2000})
+                                }
+                            },
+                        });
+                    }
+                })
+
+
+                /*$('.cash_status').bootstrapSwitch({
+                    onText: "开启",
+                    offText: "关闭",
+                    onColor: "success",
+                    offColor: "danger",
+                    size: "small",
+                    onSwitchChange: function (event, state) {
+                        var cash_id = event.target.value
+                        if (state == true) {
+                            // console.log('yes')
+                            $.ajax({
+                                type: 'post',
+                                url: 'cash_on',
+                                dataType: 'json',
+                                data: {on: 1, id: cash_id},
+                                success: function (data) {
+                                    if (data.status === 'success') {
+                                        layer.msg('开启成功', {icon: 1, time: 1500})
+                                    }
+                                    if (data.status === 'error') {
+                                        layer.msg('开启失败', {icon: 2, time: 1500})
+                                    }
+                                },
+                                error: function (data) {
+                                    layer.msg('网络异常请稍后再试', {icon: 6, time: 1500})
+                                }
+                            })
+                        } else {
+                            // console.log('no')
+                            $.ajax({
+                                type: 'post',
+                                url: 'cash_on',
+                                dataType: 'json',
+                                data: {on: 0, id: cash_id},
+                                success: function (data) {
+                                    if (data.status === 'success') {
+                                        layer.msg('关闭成功', {icon: 1, time: 1500})
+                                    }
+                                    if (data.status === 'error') {
+                                        layer.msg('关闭失败', {icon: 2, time: 1500})
+                                    }
+                                },
+                                error: function (data) {
+                                    layer.msg('网络异常请稍后再试', {icon: 6, time: 1500})
+                                }
+                            })
+                        }
+                    }
+                });*/
+                // $('[name="mycheckbox"]').bootstrapSwitch('state', false);
+            },
+        })
+
+
+    }
+
+</script>

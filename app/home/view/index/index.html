@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="verydows-baseurl" content="http://localhost/verydows-master">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/general.css" />
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/index.css" />
+    <script type="text/javascript" src="/static/theme/frontend/default/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/general.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/juicer.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/carousel.js"></script>
+
+    <script type="text/javascript">
+        var userbar = "{:url('User/userbar')}";
+        var cartbar = "{:url('User/cartbar')}";
+        $(function(){
+            $("#exp-bar").animate({width: $('#exp-bar').data('pct')}, 1500);
+        });
+    </script>
+
+</head>
+<body>
+<include file="library/head"/>
+<!-- 主体开始 -->
+<div class="container w1100">
+    <div class="module cut">
+        <!-- 商品分类开始 -->
+        <div class="catebar w210 fl">
+            <ul id="catebar">
+            <foreach name="data.family" item="v">
+                <li class="haschild">
+                    <b>&gt;</b>
+                    <a href="{:url('Index/cate',array('cate_id'=>$v['cate_id']))}">{$v.cate_name}</a>
+                    <div>
+                        <foreach name="v.child" item="vv">
+                            <a href="{:url('Index/cate',array('cate_id'=>$vv['cate_id']))}">{$vv.cate_name}</a>
+                        </foreach>
+                    </div>
+                </li>
+            </foreach>
+        </ul>
+        </div>
+        <!-- 商品分类结束 -->
+        <!-- 轮播图片广告开始 -->
+        <div class="w640 fl cut"><div class="carousel cut">
+            <div class="carousel-imgs cut">
+                <a href="http://demo.verydows.com/item/13.html"><img src="http://demo.verydows.com/upload/adv/image/56e6a9d26d76d3GZ7ISlt5y10455.jpg" width="630" height="240" alt="VIVO Xplay5 快无边界" border="0" /></a><a href="http://demo.verydows.com/news/4.html"><img src="http://demo.verydows.com/upload/adv/image/56ebb54d3c934W0xGnTL6Pz42200.jpg" width="630" height="240" alt="双11购物狂欢节来啦" border="0" /></a><a href="http://www.verydows.com/"><img src="http://demo.verydows.com/upload/adv/image/56ebc00d857f6mPasxHIy0S76596.jpg" width="630" height="240" alt="正式版发布啦!点击查看详情" border="0" /></a>  </div>
+            <ul class="carousel-tog"><li>0</li><li>1</li><li>2</li></ul>
+        </div></div>
+        <!-- 轮播图片广告结束 -->
+        <!-- 资讯开始 -->
+        <div class="w240 fr cut">
+            <div class="news mt10">
+                <h2><a href="http://shop.xinjiu9.com/article/list.html" class="fr">更多 <i>></i></a>最新资讯</h2>
+                <ul>
+                    <li><a title="双11购物狂欢节" href="http://shop.xinjiu9.com/article/index.html?id=4"><b>[活动]</b>双11购物狂欢节</a></li>
+                    <li><a title="软件环境要求" href="http://shop.xinjiu9.com/article/index.html?id=2"><b>[软件]</b>软件环境要求</a></li>
+                </ul>
+            </div>
+            <!-- 广告位(240x70)开始 -->
+            <div class="module mt10"><a href="http://demo.verydows.com/item/17.html"><img src="http://demo.verydows.com/upload/adv/image/56e7b6c31d293a7lQ8rXHGR19919.jpg" width="240" height="70" alt="Surface Pro 3 全新平板，替代您的笔记本" border="0" /></a></div>
+            <!-- 广告位(240x70)结束 -->
+        </div>
+        <!-- 资讯结束 -->
+    </div>
+    <!-- 新品上市开始 -->
+    <div class="module mt30 cut">
+        <div class="gli_t">
+            <h2 class="fl">新品上市</h2>
+        </div>
+        <div class="gli w1110">
+            <ul>
+                <foreach name="data.new" item="v">
+                <li>
+                    <div class="im">
+                        <a href="{:url('Item/index',array('goods_id'=>$v['goods_id']))}"><img alt="{$v['goods_name']}" src="{$v['goods_image']}" /></a></div>
+                    <h3><a href="{:url('Item/index',array('goods_id'=>$v['goods_id']))}">{$v.goods_name}</a></h3>
+                    <p class="price"><i>¥</i> {$v.now_price}</p>
+                </li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 首页横幅Banner广告位一(1110x90)开始 -->
+    <div class="module mt20 cut"><a href="#"><img src="" width="1110" height="90" alt="这眼镜值哭了！拍下立送夜视镜" border="0" /></a></div>
+    <!-- 首页横幅Banner广告位一(1110x90)结束 -->
+    <!-- 新品上市结束 -->
+    <!-- 推荐商品开始 -->
+    <div class="cl"></div>
+    <div class="module mt20 cut">
+        <div class="gli_t">
+            <h2>推荐商品</h2>
+        </div>
+        <div class="gli w1110">
+            <ul>
+                <foreach name="data.recommend" item="v">
+                <li>
+                    <div class="im">
+                        <a href="{:url('Item/index',array('goods_id'=>$v['goods_id']))}"><img alt="{$v['goods_name']}" src="{$v['goods_image']}" /></a></div>
+                    <h3><a href="{:url('Item/index',array('goods_id'=>$v['goods_id']))}">{$v.goods_name}</a></h3>
+                    <p class="price"><i>¥</i> {$v.now_price}</p>
+                </li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 推荐商品结束 -->
+    <!-- 首页横幅Banner广告位二(1110x100)开始 -->
+    <div class="module mt20 cut"><a href="#"><img src="" width="1110" height="100" alt="飞利浦春季特，净享美丽好食光" border="0" /></a></div>
+    <!-- 首页横幅Banner广告位二(1110x100)结束 -->
+    <!-- 特价促销开始 -->
+    <div class="cl"></div>
+    <div class="module mt20 cut">
+        <div class="gli_t">
+            <h2>特价促销</h2>
+        </div>
+        <div class="gli w1110">
+            <ul>
+                <foreach name="data.bargain" item="v">
+                <li>
+                    <div class="im">
+                        <a href="{::url('Item/index',array('goods_id'=>$v['goods_id']))}"><img alt="{$v['goods_name']}" src="{$v['goods_image']}" /></a></div>
+                    <h3><a href="{::url('Item/index',array('goods_id'=>$v['goods_id']))}">{$v.goods_name}</a></h3>
+                    <p class="price"><i>¥</i> {$v.now_price}</p>
+                </li>
+                </foreach>
+            </ul>
+        </div>
+    </div>
+    <!-- 特价促销结束 -->
+    <!-- 首页横幅Banner广告位三(1110x80)开始 -->
+    <div class="module mt20 cut"><a href="#"><img src="" width="1110" height="80" alt="三月换新家品牌家电一站购" border="0" /></a></div>
+    <!-- 首页横幅Banner广告位三(1110x80)结束 -->
+    <div class="helpper cut">
+        <div class="guarantee radius4 cut">
+            <dl>
+                <dt><i class="g-1 icon"></i></dt>
+                <dt class="mt5">放心购物</dt>
+                <dd class="mt5">正品保障，付款安全</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-2 icon"></i></dt>
+                <dt class="mt5">闪电发货</dt>
+                <dd class="mt5">当日处理，极速配货</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-3 icon"></i></dt>
+                <dt class="mt5">退换承诺</dt>
+                <dd class="mt5">7日以内，尊享退换</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-4 icon"></i></dt>
+                <dt class="mt5">售后无忧</dt>
+                <dd class="mt5">贴心服务，快速响应</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-5 icon"></i></dt>
+                <dt class="mt5">畅想低价</dt>
+                <dd class="mt5">每日促销，折扣不停</dd>
+            </dl>
+        </div>
+        <div class="cl"></div>
+        <div class="helpli cut">
+        </div>
+    </div></div>
+<!-- 主体结束 -->
+<div class="cl"></div>

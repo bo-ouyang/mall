@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="用户登录" />
+    <meta name="description" content="用户登录" />
+    <title>用户登陆</title>
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/general.css" />
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/login.css" />
+    <script type="text/javascript" src="/static/theme/frontend/default/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/general.js"></script>
+    <script type="text/javascript" src="/static/script/md5.js"></script>
+    <script type="text/javascript">
+        var userbar = "{:url('User/userbar')}";
+        var cartbar = "{:url('User/cartbar')}";
+        function login(e){
+            $('#username').vdsChecker({required:true});
+            $('#password').vdsChecker({required:true});
+            $(e).text(function(i, t){
+                var form = $('#login-form');
+                $(e).text('正在登陆...');
+                if(form.vdsSubmit() == true){
+                   // vdsSetCipher('password', '421.281.101.551.141.102.781.241.501.381.902.202');
+                    form.submit();
+                }else{
+                    $(e).text(t);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<!-- 头部开始 -->
+<div class="header">
+    <div class="w900 mt30 cut">
+        <div class="logo"><a href="{::url('Index/index')}"><img src="" /></a></div>
+    </div>
+</div>
+<!-- 头部结束 -->
+<!-- 主体开始 -->
+<div class="container w900 mt20">
+    <div class="wbox cut">
+        <div class="login-banner fl cut">
+            <a href="">
+                <img src="" width="480" height="420" alt="" border="0" /></a></div>
+        <form method="post" action="{:url('User/loginPost')}" id="login-form">
+            <input type="password" value="" class="hide" />
+            <div class="login ml530">
+                <h2 class="c666">用户登录</h2>
+                <dl class="username mt20">
+                    <dt><i class="icon"></i></dt>
+                    <dd><input title="用户名" name="username" id="username" type="text" placeholder="请输入用户名" data-warnpos="fixed" value="ROOT002" /></dd>
+                </dl>
+                <dl class="pwd mt20">
+                    <dt><i class="icon"></i></dt>
+                    <dd><input title="密码" name="password" id="password" type="password" placeholder="请输入密码" data-warnpos="fixed" value="ROOT002" /></dd>
+                </dl>
+                <dl class="pwd mt20">
+                    <dt><i class="icon"></i></dt>
+                    <dd><input title="密码" name="captcha" id="captcha" type="password" placeholder="验证码" data-warnpos="fixed" value="" /></dd>
+                </dl>
+
+                <div><img src="{:url('index/captcha')}" alt="captcha" /></div>
+                <div class="ck module mt20 cut">
+                    <div class="fl"><label>
+                        <input name="stay" type="checkbox" value="1" /><font class="ml5">一周内自动登录</font></label></div>
+                    <div class="fr"><a href="">忘记密码？</a></div>
+                </div>
+
+
+                <a class="form-submit aln-c radius4 mt20" onclick="login(this)">登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;陆</a>
+                <div class="c999 mt20">您还没有账号？ 立即<a href="{:url('User/register')}">免费注册</a></div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<div class="footer mt20">
+    <div class="links radius4 mt20">
+
+    </div>
+
+</div>
+<!-- 页脚结束 -->
+</body>
+</html>

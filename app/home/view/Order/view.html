@@ -1,0 +1,195 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>订单详情 - 新久科技商城</title>
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/general.css" />
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/user.css" />
+    <script type="text/javascript" src="/static/theme/frontend/default/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/juicer.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/general.js"></script>
+    <script type="text/javascript">
+        var userbar = "{::url('User/userbar')}";
+        var cartbar = "{::url('User/cartbar')}";
+    </script>
+</head>
+<body>
+<include file="library/head"/>
+<div class="loc w1100">
+    <div><a href="http://shop.xinjiu9.com">网站首页</a><b>></b><font>我的订单</font></div>
+</div>
+<!-- 主体开始 -->
+<div class="container w1100 mt10">
+    <div class="module cut">
+        <include file="library/user_left"/>
+        <!-- 右侧开始 -->
+        <div class="w910 cut">
+            <div class="mcter">
+                <h2>订单号：{$order['order']['order_id']}</h2>
+                <div class="order cut">
+                    <div class="order-step mt20 cut">
+                        <ul id="order-step">
+                            <li class="s-1 ok"><h4>提交订单</h4><i></i></li>
+                            <li class="arrow ok"><i></i></li>
+                            <eq name="order['order']['payment_method']" value="2">
+                                <li class="s-2 ok"><h4>货到付款</h4><i></i></li>
+                                <li class="arrow ok"><i></i></li>
+                                <li class="s-3"><h4>等待发货</h4><i></i></li>
+                                <else/>
+                                <eq name="order['order']['order_status']" value="2">
+                                    <li class="s-2 ok"><h4>订单取消</h4><i></i></li>
+                                    <else/>
+                                    <li class="s-2"><h4>等待付款</h4><i></i></li>
+                                </eq>
+                            </eq>
+                        </ul>
+                    </div>
+                    <div class="sdcter mt20 cut">
+                        <div class="w360 fl cut">
+                            <dl>
+                                <dt>下单时间：</dt>
+                                <dd>{:date('y-m-d H:i:s',$order['order']['order_id'])}</dd>
+                            </dl>
+                            <dl class="mt5">
+                                <dt>收件人信息：</dt>
+                                <dd>
+                                    <p>{$order.consignee.receiver}<font class="c666 ml10">(联系电话：{$order.consignee.mobile})</font></p>
+                                    <p class="mt5">{$order.consignee.province}{$order.consignee.city}{$order.consignee.brought}{$order.consignee.address}</p>
+                                    <p class="mt5">{$order.consignee.zip}</p>
+                                </dd>
+                            </dl>
+                            <dl class="mt5">
+                                <dt>配送方式：</dt>
+                                <dd>{$order.shipping}</dd>
+                            </dl>
+                            <dl class="mt5">
+                                <dt>支付方式：</dt>
+                                <dd>{$order.pay_method}</dd>
+                            </dl>
+                            <dl class="mt5">
+                                <dt>订单金额：</dt>
+                                <dd><b class="red"><font class="cny">¥</font>{$order.order.order_amount}</b><span class="c666 ml10">(含运费：<font class="cny">¥</font>10.00)</span></dd>
+                            </dl>
+                            <dl class="mt5">
+                                <dt>留言备注：</dt>
+                                <dd><font class="c999">{$order.order.memos}</font></dd>
+                            </dl>
+                        </div>
+
+                        <div class="cdo aln-c cut">
+                            <h3 class="f14 c666">订单状态：<font class="c333">等待发货</font></h3>
+                            <div class="module mt20">
+                                <if condition="($order['order']['order_status'] eq 0)">
+                                    <if condition="($order['order']['payment_method'] eq 1) OR ($order['order']['payment_method'] eq 3)">
+                                        <p><a class="sm-red btn" href="{::url('Pay/index',array('id'=>$order['order']['order_id']))}">立即付款</a></p>
+                                    </if>
+                                    <p class="mt10"><button type="button" class="sm-gray btn" onclick="cancelOrder(this, {$order['order']['order_id']})">取消订单</button></p>
+                                </if>
+
+                                <if condition="($order['order']['order_status'] eq 1)">
+                                    <p class="mt10"><button type="button" class="sm-gray btn" onclick="cancelOrder(this, {$order['order']['order_id']})">取消订单</button></p>
+                                </if>
+
+                                <if condition="($order['order']['order_status'] eq 2)">
+                                    <p><a class="sm-blue btn" href="{::url('Order/rebuy',array('id'=>$order['order']['order_id']))}">重新购买</a></p>
+                                </if>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- 商品清单开始 -->
+                    <div class="tli mt10">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <th colspan="2">商品</th>
+                                <th width="18%">单价(元)</th>
+                                <th width="18%">数量</th>
+                                <th width="18%">小计(元)</th>
+                            </tr>
+                            <foreach name="order.goods_info" item="v">
+                            <tr>
+                                <td width="80"><a href="{::url('Item/index',array('goods_id'=>$v['goods_id']))}" target="_blank"><img class="gim" src="/static/Uploads/50/{$v['goods_image']}" /></a></td>
+                                <td>
+                                    <div class="aln-l">
+                                        <a href="{::url('Item/index',array('goods_id'=>$v['goods_id']))}" target="_blank">{$v.goods_name}</a>
+                                        <notempty name="v.goods_optional" >
+                                            <p class="c999 mt5"><foreach name="v.goods_optional" item="vv" key="kk"><span class="mr5">[{$kk}: <font class="c666">{$vv}</font>]</span></foreach></p>
+                                        </notempty>
+                                    </div>
+                                </td>
+                                <td>{$v.goods_price}</td>
+                                <td>{$v.goods_qty}</td>
+                                <td>{$v['goods_qty']*$v['goods_price']}</td>
+                            </tr>
+                            </foreach>
+                            <tr>
+                                <td colspan="5"><div class="total fr cut">
+                                    <dl>
+                                        <dt>运费：</dt>
+                                        <dd><font class="cny">¥</font> 10.00</dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>应付款总额</dt>
+                                        <dd class="red"><font class="cny">¥</font> {$order.order.order_amount}</dd>
+                                    </dl>
+                                </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- 商品清单结束 -->
+                </div>
+            </div>
+        </div>
+        <!-- 右侧结束 -->
+    </div>
+    <div class="cl"></div>
+    <div class="helpper cut">
+        <div class="guarantee radius4 cut">
+            <dl>
+                <dt><i class="g-1 icon"></i></dt>
+                <dt class="mt5">放心购物</dt>
+                <dd class="mt5">正品保障，付款安全</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-2 icon"></i></dt>
+                <dt class="mt5">闪电发货</dt>
+                <dd class="mt5">当日处理，极速配货</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-3 icon"></i></dt>
+                <dt class="mt5">退换承诺</dt>
+                <dd class="mt5">7日以内，尊享退换</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-4 icon"></i></dt>
+                <dt class="mt5">售后无忧</dt>
+                <dd class="mt5">贴心服务，快速响应</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-5 icon"></i></dt>
+                <dt class="mt5">畅想低价</dt>
+                <dd class="mt5">每日促销，折扣不停</dd>
+            </dl>
+        </div>
+        <div class="cl"></div>
+        <div class="helpli cut">
+        </div>
+    </div></div>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<div class="footer mt20">
+    <div class="links radius4 mt20">
+
+    </div>
+
+</div>
+<!-- 页脚结束 -->
+</body>
+</html>

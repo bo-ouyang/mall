@@ -1,0 +1,150 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>收货地址</title>
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/general.css" />
+    <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/css/user.css" />
+    <script type="text/javascript" src="/static/theme/frontend/default/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/juicer.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/general.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/consignee.js"></script>
+    <script type="text/javascript" src="/static/theme/frontend/default/js/consign.js"></script>
+    <script type="text/javascript">
+        var userbar = "{:url('User/userbar')}";
+        var cartbar = "{:url('User/cartbar')}";
+        function submitConsigneeForm(){
+            if(checkConsigneeForm('consignee-form')){
+                var form = $('#consignee-form');
+                if(form.data('action') == 'add'){
+                    form.attr('action', "{:url('Consignee/consignee')}");
+                }else{
+                    form.attr('action', "{:url('Consignee/consignee')}");
+                }
+                form.submit();
+            }
+        }
+
+    </script>
+</head>
+<body>
+<include file="library/head"/>
+<div class="loc w1100">
+    <div><a href="">网站首页</a><b>></b><font>收货地址</font></div>
+</div>
+<div class="container w1100 mt10">
+    <div class="module cut">
+        <include file="library/user_left"/>
+        <!-- 右侧开始 -->
+        <div class="w910">
+            <div class="consignee mcter">
+                <h2>收件地址管理</h2>
+                <div class="consignee-form">
+                    <div>
+                        <button type="button" class="sm-blue" id="new-csg-btn"
+                                onclick="showConsigneeForm('consignee-box', 'add')">+ 新建收件人信息</button>
+                    </div>
+                    <div class="module mt10 hide cut" id="consignee-box">
+                        <form method="post" id="consignee-form">
+                            <input type="hidden" name="id" value=""/>
+                            <div class="mcter cut">
+                                <dl>
+                                    <dt><label for="name">收件人：</label></dt>
+                                    <dd><input title="收件人" name="receiver" id="name" type="text" class="w200 txt" value="" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>所在地区：</dt>
+                                    <dd id="city_4" >
+                                        <div id="china">
+
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt><label for="address">详细地址：</label></dt>
+                                    <dd><input title="详细地址" name="address" id="address" type="text" class="w400 txt" value="" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt><label for="zip">邮编：</label></dt>
+                                    <dd><input name="zip" id="zip" type="text" class="w100 txt" value="" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt><label for="mobile">手机号码：</label></dt>
+                                    <dd><input name="mobile" id="mobile_no" type="text" class="w200 txt" placeholder="手机或固定电话至少填写一项" value="" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt><label for="tel">固定电话：</label></dt>
+                                    <dd><input name="tel" id="tel_no" type="text" class="w200 txt" placeholder="格式：区号-电话号-分机号" value="" /></dd>
+                                </dl>
+                                <div class="submit-btn mt10">
+                                    <button type="button" class="sm-green mr10" onclick="submitConsigneeForm()">保存信息</button>
+                                    <button type="button" class="sm-gray" onclick="cancelConsigneeForm('consignee-box', 'new-csg-btn')">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="list mt5 cut">
+                    <p class="c888 ml5">您已保存了<p class="ml5 mr5 red">
+                        <present name="count">{$count}<else/>0</present>
+                    </p>条收件人地址，还能保存<b class="ml5 mr5 red"><present name="address">15-{$count}<else/>15</present></b>条收件人地址</present>
+
+                    <div class="module mt10">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                            <present name="address">
+                                <foreach name="address" item="v">
+                            <tr>
+                                <th width="130">收件人</th>
+                                <th>收件地址</th>
+                                <th width="120"><p class="aln-c">联系电话</p></th>
+                                <th width="110"><p class="aln-c">邮编</p></th>
+                                <th width="150"><p class="aln-c">操作</p></th>
+                            </tr>
+                            <tr>
+                                <td>{$v.receiver}</td>
+                                <td>
+                                    <p>{$v.province}{$v.city}{$v.borough}</p>
+                                    <p class="mt5">{$v.address}</p>
+                                </td>
+                                <td><p class="aln-c">{$v.mobile}</p></td>
+                                <td><p class="aln-c">{$v.zip}</p></td>
+                                <td>
+                                    <div class="aln-c">
+                                        <eq name="v['is_default']" value="1"><font class="red ml5 mr5">默认地址</font>
+                                         <else/>
+                                        <a href="{:url('Consignee/consignee_as_default',array('id'=>$v['id']))}">设为默认</a>
+                                        </eq>
+                                        <a onclick="getConsigneeInfo('consignee-box', {$v.id})">编辑</a>
+                                        <a href="{:url('Consignee/consignee_del',array('id'=>$v['id']))}">删除</a>
+                                    </div>
+                                </td>
+                            </tr>
+                                </foreach>
+                            </present>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- 右侧结束 -->
+<include file="User/bott"/>
+
+<script>
+    $(document).ready(function (e) {
+    $('#china').html("<select id='province' name='province'></select>" +
+    "<select id='city' name='city'></select>" +
+    "<select id='area' name='borough'></select>")
+    province();
+    $("#province").change(function(){ //当元素的值发生改变时，会发生 change 事件,该事件仅适用于文本域（text field），以及 textarea 和 select 元素。
+    //加载市
+    city();
+    area();
+    });
+    //当市选中变化，重新加载区
+    $("#city").change(function(){
+    //加载区
+    area();
+    })
+    })
+</script>

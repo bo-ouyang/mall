@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<include file='library/meta'/>
+<link rel="stylesheet" type="text/css" href="/static/theme/backend/css/verydows.css" />
+<link rel="stylesheet" type="text/css" href="/static/theme/backend/css/main.css" />
+<script type="text/javascript" src="/static/script/jquery.js"></script>
+<script type="text/javascript" src="/static/theme/backend/js/verydows.js"></script>
+<script type="text/javascript">
+function submitForm(){
+  $('#cate_name').vdsFieldChecker({rules: {required:[true, '分类名称不能为空'], maxlen:[60, '分类名称不能超过60个字符']}});
+  $('#seq').vdsFieldChecker({rules: {required:[true, '排序不能为空'], seq:[true, '排序只能填写0到99之间的整数']}});
+  $('form').vdsFormChecker();
+}
+</script>
+</head>
+<body>
+<div class="content">
+  <div class="loc"><h2><i class="icon"></i>编辑商品分类:<font class="ml5">[{$data.cate.cate_id}]</font></h2></div>
+  <form method="post" action="{:url('GCate/cate_edit')}">
+    <div class="box">
+      <div class="module">
+        <table class="dataform">
+          <tr>
+            <th width="110">分类名称</th>
+            <td><input class="w200 txt" name="cate_name" id="cate_name" type="text" value="{$data.cate.cate_name}" /></td>
+          </tr>
+          <tr>
+            <th>上级分类</th>
+            <td>
+              <select id="parent_id" name="parent_id" class="slt">
+                <option value="0">-- 无上级分类 --</option>
+                <foreach name="data.cates" item="v">
+                  <option value="{$v.cate_id}"
+                  <eq name="data.cate.parent_id" value="$v['cate_id']">selected</eq>
+                  >{:str_repeat('|—', $v['lev'])}{$v.cate_name}</option>
+                </foreach>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>分类下品牌</th>
+            <td>
+              <div class="ckrow pad5">
+                <ul class="c666">
+                  <foreach name="data.brand" item="v">
+                <li>
+                  <label class="mr20">
+                    <input name="brands[]" type="checkbox" value="{$v.brand_id}"
+
+                    >
+                    <font class="c666 ml5">{$v.brand_name}</font></label>
+                </li>
+                </foreach>
+                </ul>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <th>Meta 关键词</th>
+            <td><textarea name="meta_keywords" id="meta_keywords" class="txtarea" cols="68" rows="5">{$v.meta_keywords}</textarea></td>
+          </tr>
+          <tr>
+            <th>Meta 描述</th>
+            <td><textarea name="meta_description" id="meta_description" class="txtarea" cols="68" rows="5">{$v.meta_description}</textarea></td>
+          </tr>
+          <tr>
+            <th>排序</th>
+            <td><input class="w50 txt" name="seq" id="seq" value="{$v.seq}" type="text" /></td>
+          </tr>
+        </table>
+      </div>
+      <div class="submitbtn">
+        <button type="button" class="ubtn btn" onclick="submitForm()">保存并更新</button>
+        <button type="reset" class="fbtn btn">重置表单</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

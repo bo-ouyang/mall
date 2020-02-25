@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <meta name="keywords" content="" />
+            <meta name="description" content="" />
+            <title>Apple iPhone 6s Plus - 新久科技商城</title>
+            <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/general.css" />
+            <link rel="stylesheet" type="text/css" href="/static/theme/frontend/default/style/goods.css" />
+            <script type="text/javascript" src="/static/theme/frontend/default/js/jquery-1.10.2.min.js"></script>
+            <script type="text/javascript" src="/static/theme/frontend/default/js/jquery.zoom.min.js"></script>
+            <script type="text/javascript" src="/static/theme/frontend/default/js/general.js"></script>
+            <script type="text/javascript" src="/static/theme/frontend/default/js/juicer.js"></script>
+            <script type="text/javascript" src="/static/theme/frontend/default/js/goods.js"></script>
+            <script type="text/javascript" src="/static/theme/frontend/default/js/tocart.js"></script>
+            <script type="text/javascript">
+                var userbar = "{:url('User/userbar')}";
+                var cartbar = "{:url('User/cartbar')}";
+                $(function(){getGoodsReviews(1);});
+                function addFavorite(id){
+                    $.ajax({
+                        type: "post",
+                        dataType: "text",
+                        url: "http://shop.xinjiu9.com/favorite/add.html",
+                        data: {'id':id},
+                        success: function(status){
+                            switch(status){
+                                case '-3': asyncLogin(); break;
+                                case '-2': $('body').vdsDialog({type:'err', text:'您收藏的商品不存在或已下架!'}); break;
+                                case '-1': $('body').vdsDialog({type:'err', text:'您收藏夹中已存在该商品!'}); break;
+                                case '0': $('body').vdsDialog({type:'err', text:'收藏失败，请稍后重试！'}); break;
+                                case '1': $('body').vdsDialog({text:'加入收藏夹成功！'}); break;
+                            }
+                        }
+                    });
+                }
+
+                function getGoodsReviews(page_id){
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: "",
+                        data: {'page':page_id},
+                        success: function(data){
+                            $('#reviews').empty();
+                            if(data.status == 1){
+                                $('.reviews-total').text(data.total);
+                                $('#reviews-rating').text(data.rating);
+                                $('#reviews-satisficing').css('padding-left', data.rating * 100 - 14).find('dt').text(data.rating);
+                                $('#reviews').append(juicer($('#review-tpl').html(), data));
+                                if(data.paging != null) $('#reviews').append(juicer($('#review-paging-tpl').html(), data));
+                            }
+                            else{
+                                $('#reviews').append('<p class="aln-c c999">暂无评价...</p>');
+                            }
+                        }
+                    });
+                }
+
+                function reviewPageTurn(page_id){getGoodsReviews(page_id);}
+                function reviewPageJump(e){getGoodsReviews($(e).prev('input').val())}
+            </script>
+        </head>
+<body>
+<include file="library/head" />
+<div class="loc w1100">
+    <div>
+        <a href="{::url('Index/index')}">网站首页</a>
+        <foreach name="data.cate.pact" item="v" >
+        <b>&gt;</b>
+        <a href="{::url('Index/cate',array('cate_id'=>$v['cate_id']))}">{$v.cate_name}</a>
+        </foreach>
+        <b>&gt;</b>
+        <font>{$data.info.goods_name}</font>
+    </div>
+</div>
+<!-- 主体开始 -->
+<div class="container w1100 mt10">
+    <div class="gtds cut">
+        <div class="gimbox fl">
+            <!-- 商品图片开始 -->
+            <div class="module">
+                <div class="im cut">
+                    <div id="goods-imgarea">
+                        <img src="{$data.info.goods_image}" /></div>
+                    <ul class="hide" id="goods-imgsrc">
+                        <foreach name="data.album" item="v">
+                        <li data-zoom="{$v.image}"><img src="{$v.image}" />
+                        </li>
+                        </foreach>
+                    </ul>
+                    <i class="zoom icon"></i> </div>
+                <div class="tmb mt10 cut">
+                    <a class="tmb-arrow lh disabled" id="tmb-back-btn"><i class="icon"><</i></a>
+                    <div class="tmb-im cut">
+                        <div class="module cut" id="thumb-container">
+                            <foreach name="data.album" item="v">
+                            <a class="cur"><img alt="" src="{$v.image}" /></a>
+                            </foreach>
+                        </div>
+                    </div>
+                    <a class="tmb-arrow rh disabled" id="tmb-forward-btn"><i class="icon">></i></a>
+                </div>
+            </div>
+            <!-- 商品图片结束 -->
+            <div class="social mt20"><a onclick="addFavorite({$data.info.goods_id})"><i class="favor icon"></i><font>收藏</font></a></div>
+        </div>
+        <div class="gtbox cut">
+            <h1>{$data.info.goods_name}</h1>
+            <p class="mt8 c888">{$data.info.goods_brief|htmlspecialchars_decode}</p>
+            <div class="gatt module mt10 cut">
+                <dl>
+                    <dt>商品货号:</dt>
+                    <dd>{$data.info.goods_sn}</dd>
+                </dl>
+                <if condition="($data.info.bargain eq 1)">
+                <dl class="mt5">
+                    <dt>原<span class="sep-24"></span>价:</dt>
+                    <dd class="opri"><i>¥</i>{$data.info.original_price}</dd>
+                </dl>
+                </if>
+                <dl class="mt5">
+                    <dt>今日售价:</dt>
+                    <dd class="npri"><i>¥</i><font id="nowprice" data-price="{$data.info.now_price}">{$data.info.now_price}</font></dd>
+                </dl>
+            </div>
+            <div class="cutline mt10"></div>
+            <div class="gatt module">
+                <notempty name="data.type">
+                    <foreach name="data.type" item="v">
+                <dl class="mt15">
+                    <dt>{$v.name}:</dt>
+                    <notempty name="v.info">
+                    <dd class="opt" data-checked="">
+                        <foreach name="v.info" item="vv">
+                        <a data-key="{$vv.id}" data-price="{$vv.opt_price}">{$vv.opt_text}</a>
+                        </foreach>
+                    </dd>
+                    </notempty>
+                </dl>
+                    </foreach>
+                </notempty>
+                <form method="post" action="" id="buy-form">
+                    <input type="hidden" name="id" value="{$data.info.goods_id}" />
+                    <dl class="mt15">
+                        <dt>购买数量:</dt>
+                        <dd class="qty" id="buy-qty">
+                            <button type="button">-</button>
+                            <input name="qty" class="aln-c" type="text" value="1" data-stock="{$data.info.stock_qty}" />
+                            <button type="button">+</button>
+                            <font class="c999 ml5">件</font>
+                        </dd>
+                    </dl>
+                </form>
+            </div>
+            <div class="buy mt30">
+                <a class="add-cart icon" onclick="addToCart({$data.info.goods_id}, this)">加入购物车</a>
+                <a class="buy-now icon" onclick="toBuy()">立即购买</a></div>
+        </div>
+    </div>
+    <div class="module mt10 cut">
+        <!-- 左边开始 -->
+        <div class="w210 fl cut">
+            <div class="sli mb10">
+                <h2>相关推荐</h2>
+                <dl>
+                    <dt><a href="http://shop.xinjiu9.com/item/1.html"><img alt="Apple iPhone 6s (A1700) 移动联通电信4G手机" src="http://shop.xinjiu9.com/index/img?i=156e2d4fa488d0.jpg&s=150x150" /></a></dt>
+                    <dd class="lt mt5">
+                        <a title="Apple iPhone 6s (A1700) 移动联通电信4G手机" href="http://shop.xinjiu9.com/item/1.html">Apple iPhone 6s (A1700) 移动联通电信4G手机</a>
+                        <p><i>¥</i>4888.00</p>
+                    </dd>
+                </dl>
+            </div>
+            <div class="sli mb10">
+                <h2>热销榜</h2>
+
+                <dl>
+                    <dt><a href="http://shop.xinjiu9.com/item/16.html">
+                        <img alt="Apple iPhone 6s Plus" src="http://shop.xinjiu9.com/index/img?i=1656e6d17164926.jpg&s=150x150" /></a></dt>
+                    <dd class="lt mt5">
+                        <a title="Apple iPhone 6s Plus" href="http://shop.xinjiu9.com/item/16.html">Apple iPhone 6s Plus</a>
+                        <p><i>¥</i>5588.00</p>
+                    </dd>
+                    <dd class="ct mt5">已售出<b>2</b>件</dd>
+                </dl>
+
+        </div>
+        </div>
+        <!-- 左边结束 -->
+            <!-- 详情开始 -->
+            <div class="details cut">
+                <div class="tabs cut">
+                    <ul id="contabs">
+                        <li class="cur">商品介绍</li>
+                        <li>规格参数</li>
+                        <li>商品评价 (<font class="reviews-total">0</font>)</li>
+                    </ul>
+                </div>
+                <div class="content">
+                    <div align="center">
+                       {$data.info.goods_content}
+                    </div>
+                </div>
+                <!-- 规格参数开始 -->
+                <div class="content hide">
+                    <div class="speci">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                            <notempty name="data.attr">
+                            <foreach name="data.attr" item="v">
+                            <tr>
+                                <th>{$v.name}</th>
+                                <td>{$v.value}</td>
+                            </tr>
+                            </foreach>
+                            </notempty>
+                        </table>
+                    </div>
+                </div>
+                <!-- 规格参数结束 -->
+                <!-- 商品评论开始 -->
+                <div class="content hide">
+                    <div class="synrating cut">
+                        <div class="rating fl cut"><font id="reviews-rating">0</font> 分</div>
+                        <div class="satisficing cut">
+                            <dl id="reviews-satisficing">
+                                <dt>0</dt>
+                                <dd>◆</dd>
+                            </dl>
+                            <ul>
+                                <li class="col1">很不满意</li>
+                                <li class="col2">不满意</li>
+                                <li class="col3">一般</li>
+                                <li class="col4">满意</li>
+                                <li class="col5">非常满意</li>
+                            </ul>
+                            <p class="c888">该商品共累计评价 <strong class="reviews-total">0</strong> 条</p>
+                        </div>
+                    </div>
+                    <div class="reviews module mt20 cut" id="reviews"></div>
+                </div>
+                <!-- 商品评论结束 -->
+            </div>
+            <!-- 详情结束 -->
+
+    </div>
+    <div class="cl"></div>
+    <div class="helpper cut">
+        <div class="guarantee radius4 cut">
+            <dl>
+                <dt><i class="g-1 icon"></i></dt>
+                <dt class="mt5">放心购物</dt>
+                <dd class="mt5">正品保障，付款安全</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-2 icon"></i></dt>
+                <dt class="mt5">闪电发货</dt>
+                <dd class="mt5">当日处理，极速配货</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-3 icon"></i></dt>
+                <dt class="mt5">退换承诺</dt>
+                <dd class="mt5">7日以内，尊享退换</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-4 icon"></i></dt>
+                <dt class="mt5">售后无忧</dt>
+                <dd class="mt5">贴心服务，快速响应</dd>
+            </dl>
+            <span class="sep"></span>
+            <dl>
+                <dt><i class="g-5 icon"></i></dt>
+                <dt class="mt5">畅想低价</dt>
+                <dd class="mt5">每日促销，折扣不停</dd>
+            </dl>
+        </div>
+        <div class="cl"></div>
+        <div class="helpli cut">
+        </div>
+    </div> </div>
+<!-- 主体结束 -->
+<div class="cl"></div>
+<!-- 页脚开始 -->
+<div class="footer mt20">
+    <div class="links radius4 mt20">
+
+    </div>
+
+</div>
+<!-- 页脚结束 -->
+<!-- 评价模板开始 -->
+<script type="text/template" id="review-tpl">
+    {@each reviews as v}
+    <dl>
+        <dt><div class="avatar">{@if v.avatar != ''}<img width="60" height="60" src="http://shop.xinjiu9.com/upload/user/avatar/${v.avatar}" />{@else}<i class="icon"></i>{@/if}</div><div class="uname">${v.username}</div></dt>
+        <dd>
+            <div><span class="rating s_${v.rating}"></span><font>${v.satisficing}</font></div>
+            <p class="mt10 c666">${v.content}</p>
+            <p class="mt8 caaa aln-r">${v.created_date}</p>
+        </dd>
+        {@if v.replied != ''}
+        <dd class="replied mt10">
+            <p class="c666"><strong>客服回复：</strong>${v.replied.content}</p>
+            <p class="mt5 caaa aln-r">${v.replied.dateline}</p>
+        </dd>
+        {@/if}
+    </dl>
+    {@/each}
+</script>
+<!-- 评价模板结束 -->
+<!-- 评价翻页模板开始 -->
+<script type="text/template" id="review-paging-tpl">
+    <div class="module aln-r cut">
+        <div class="paging small">
+            {@if paging.first_page == paging.current_page}<span class="disabled">上一页</span>{@else}<a onclick="reviewPageTurn(${paging.prev_page})">上一页</a>{@/if}
+            {@each paging.all_pages as v}
+            {@if paging.current_page == v}<span class="cur">${paging.current_page}</span>{@else}<a onclick="reviewPageTurn(${v})">${v}</a>{@/if}
+            {@/each}
+            {@if paging.last_page == paging.current_page}<span class="disabled">下一页</span>{@else}<a onclick="reviewPageTurn(${paging.next_page})">下一页</a>{@/if}
+            <span class="tot">共<b>${paging.total_page}</b>页</span>
+            <span class="jump">转到第<input type="text" value="${paging.current_page}" />页<button type="button" onclick="reviewPageJump(this)">确 定</button></span>
+        </div>
+    </div>
+</script>
+<!-- 评价翻页模板结束 -->
+<!-- 加入购物车对话框开始 -->
+<div class="tocart-loading cut" id="tocart-loading"><img src="http://shop.xinjiu9.com/public/theme/frontend/default/images/sm-loading.gif" /><font class="c999 ml5">正在添加，请稍后...</font></div>
+<div class="tocart-dialog cut" id="tocart-dialog">
+    <p><i class="icon"></i><font class="ml10"></font></p>
+    <div class="mt20"><a class="sm-green" href="http://shop.xinjiu9.com/cart/index.html">结算付款</a><a class="sm-gray" onclick="cancelTocartDialog()">继续购物</a></div>
+    <a class="c999" onclick="cancelTocartDialog()">×</a>
+</div>
+<!-- 加入购物车对话框结束 -->
+<!-- 用户登陆框开始 -->
+<script type="text/javascript" src="http://shop.xinjiu9.com/public/script/md5.js"></script>
+<script type="text/javascript">
+    function asyncLogin(){
+        var login = $('#vds-poplogin');
+        login.css({
+            left: ($(window).width() - login.width()) / 2,
+            top: ($(window).height() - login.height()) /2,
+        }).find('span.vds-warning').remove();
+        login.find('p.red').addClass('hide');
+        masker('show');
+        login.show().find('.close').on('click', function(){masker('hide'); login.hide();});
+        //登录请求
+        login.find('.go').on('click', function(){
+            var username = login.find('input[name="username"]'), password = login.find('input[name="password"]'), captcha = login.find('input[name="captcha"]');
+            username.vdsChecker({required:true});
+            password.vdsChecker({required:true});
+            $(this).text(function(i, t){
+                $(this).text('正在登陆...');
+                if(login.vdsSubmit() == true){
+                    vdsSetCipher('password', '561.212.221.231.661.102.781.241.471.661.071.102');
+                    var dataset = {'username':username.val(), 'password':password.val(), 'captcha':captcha.val(), 'stay':login.find('input[name="stay"]').val()};
+                    $.post("http://shop.xinjiu9.com/user/login.html?step=submit&async=1", dataset, function(rs){
+                        password.val('');
+                        captcha.val('');
+                        $('#poplogin-captcha').attr('src', 'http://shop.xinjiu9.com/captcha/img&'+Math.random());
+                        switch(rs){
+                            case '-1':login.find('p.red').text('用户名或密码不正确!').removeClass('hide'); login.find('.go').text(t); break;
+                            case '0': login.find('p.red').text('验证码不正确!').removeClass('hide'); login.find('.go').text(t); break;
+                            case '1': login.hide(); masker('hide'); break;
+                        }
+                    });
+                }else{
+                    $(this).text(t);
+                }
+            });
+        });
+    }
+</script>
+<div class="poplogin" id="vds-poplogin">
+    <h2>您尚未登录</h2>
+    <p class="f14 red mt20 aln-c hide"></p>
+    <form>
+        <div class="pbody">
+            <dl class="username">
+                <dt><i class="icon"></i></dt>
+                <dd><input title="用户名" name="username" type="text" placeholder="请输入用户名" data-warnpos="fixed" /></dd>
+            </dl>
+            <dl class="pwd mt20">
+                <dt><i class="icon"></i></dt>
+                <dd><input title="密码" name="password" type="password" id="password" placeholder="请输入密码" data-warnpos="fixed" /></dd>
+            </dl>
+            <div class="ck module mt20 cut">
+                <div class="fl"><label><input name="stay" type="checkbox" value="1" />一周内自动登录</label></div>
+                <div class="fr"><a href="http://shop.xinjiu9.com/user/retrieve_pwd.html">忘记密码？</a></div>
+            </div>
+            <div class="module mt20"><button type="button" class="go radius4">登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;陆</button></div>
+            <div class="c999 ml10 mt20">您还没有账号？ 立即<a href="http://shop.xinjiu9.com/user/register.html">免费注册</a></div>
+            <a class="close"><i class="icon"></i></a>
+        </div>
+    </form>
+</div><!-- 用户登陆框结束 -->
+</body>
+</html></title>
+</head>
+<body>
+
+</body>
+</html>

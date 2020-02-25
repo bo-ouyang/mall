@@ -1,0 +1,36 @@
+
+<!-- 顶部开始 -->
+<div class="topper">
+    <div class="w1100 x-auto">
+        <div class="topper-logged fl" id="login-userbar">
+            <font class="c666 mr10"></font>
+            <a href="{:url('User/login')}">登陆</a>
+            <a href="{::url('User/register')}" class="red">免费注册</a>
+            <a href="{::url('User/registerShop')}" class="red" style="color:red;">商家入驻</a>
+        </div>
+        <div class="topper-links fr">
+            <a href="{:url('Order/index')}"  target="_blank">我的订单</a>
+            <span class="sep">|</span><a href="http://shop.xinjiu9.com/favorite/index.html"  target="_blank">收藏夹</a>
+            <span class="sep">|</span>
+        </div>
+    </div>
+</div>
+
+<script type="text/template" id="logininfo-tpl">
+    <a class="user"><i class="icon"></i>${username}</span><b class="icon"></b></a><font class="c999 ml10">欢迎您回来!</font>
+    <div class="userbar hide">
+        <div class="avatar fl">
+            {@if avatar != ''}
+            <a href="{:url('User/index')}"><img width="60" height="60" src="/static/Uploads/User/crop/${avatar}" /></a>
+            {@else}
+            <a href="{:url('User/index')}"><img href="" src="" /></a>
+            {@/if}
+        </div>
+        <ul class="userbar-nav">
+            <li><a href="{:url('User/index')}">进入用户中心</a></li>
+            <li><a href="">编辑资料</a></li>
+            <li><a href="{:url('User/logout')}">退出</a></li>
+        </ul>
+    </div>
+</script>
+<!-- 顶部结束 -->

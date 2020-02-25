@@ -1,0 +1,60 @@
+
+<include file="library/top"/>
+<!-- 头部开始 -->
+<div class="header">
+    <div class="w1100">
+        <div class="module cut">
+            <div class="logo fl"><a href="{:url('Index/index')}"><img alt="返回首页" src="" border="0" /></a></div>
+            <!-- 头部搜索开始 -->
+            <div class="top-search fl">
+                <form method="get" action="{:url('Index/search')}">
+                    <div class="sf cut"><input class="fl" name="kw" type="text" value="" placeholder="双11提前购，畅想全年最低价" /><button class="fr" type="submit">搜 索</button></div>
+                </form>
+            </div>
+            <!-- 头部搜索结束 -->
+            <!-- 头部购物车开始 -->
+            <div class="top-cart fr">
+                <div class="radius4 mt10">
+                    <i class="icon"></i>
+                    <a href="{:url('Cart/cart')}" id="cartbar">
+                        <img class="hide" src="" />
+                        <font>我的购物车</font>(<b>0</b>)</a></div>
+            </div>
+            <!-- 头部购物车结束 -->
+        </div>
+        <div class="module mt20">
+            <!-- 导航开始 -->
+            <div class="nav">
+                <div class="cateth w210 fl" id="cateth">
+                    <h2>全部商品分类<i class="icon"></i></h2>
+                    <div class="catebar w210 hide">
+                        <ul id="catebar">
+                            <foreach name="data.family" item="v">
+                                <li class="haschild">
+                                    <b>&gt</b>
+                                    <a href="{:url('Index/cate',array('cate_id'=>$v['cate_id']))}">{$v.cate_name}</a>
+                                    <div>
+                                        <foreach name="v.child" item="vv">
+                                            <a href="{:url('Index/cate',array('cate_id'=>$vv['cate_id']))}">{$vv.cate_name}</a>
+                                        </foreach>
+                                    </div>
+                                </li>
+                            </foreach>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cross cut">
+                    <ul>
+                        <li><a href="http://shop.xinjiu9.com">首页</a></li>
+                        <li><a href="http://shop.xinjiu9.com">会员专区</a></li>
+                        <li><a href="http://shop.xinjiu9.com">抢购专区</a></li>
+                        <li><a href="http://shop.xinjiu9.com">商家专区</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <!-- 导航结束 -->
+        </div>
+    </div>
+</div>
+<!-- 头部结束 -->
