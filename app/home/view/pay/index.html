@@ -10,8 +10,8 @@
     <script type="text/javascript" src="/static/theme/frontend/default/js/juicer.js"></script>
     <script type="text/javascript" src="/static/theme/frontend/default/js/general.js"></script>
     <script type="text/javascript">
-        var userbar = "{::url('User/userbar')}";
-        var cartbar = "{::url('User/cartbar')}";
+        var userbar = "{:url('User/userbar')}";
+        var cartbar = "{:url('User/cartbar')}";
         function showPaymentSelect(){
             $('#payment-select span').hide();
             $('#payment-select select').show();
@@ -27,7 +27,7 @@
 <!-- 头部开始 -->
 <div class="header">
     <div class="w1100 cut">
-        <div class="logo"><a href="http://shop.xinjiu9.com"><img src="http://shop.xinjiu9.com/public/theme/frontend/default/images/logo.gif" /></a></div>
+        <div class="logo"><a href=""><img src="" /></a></div>
     </div>
 </div>
 <!-- 头部结束 -->
@@ -38,7 +38,7 @@
             <table>
                 <tr>
                     <th width="80">订单编号：</th>
-                    <td>{$order.order_id}</td>
+                    <td>{$order.order_sn}</td>
                 </tr>
                 <tr>
                     <th>订单金额：</th>
@@ -48,7 +48,7 @@
                     <th>付款方式：</th>
                     <td id="payment-select">
                         <span><font><eq name="order['payment_method']" value="1">余额支付</eq><eq name="order['payment_method']" value="2">货到付款</eq><eq name="order['payment_method']" value="3">支付宝</eq></font><a class="f12 sm-gen ml10 pointer" onclick="showPaymentSelect()">更改付款方式</a></span>
-                        <form method="post" action="{::url('Pay/index',array('id'=>$order['order_id']))}" id="change-payment-form">
+                        <form method="post" action="{:url('Pay/index',array('id'=>$order['order_sn']))}" id="change-payment-form">
                             <select name="change_payment" class="slt hide" onchange="changePayment(this)">
                                 <option value="1">余额支付                </option>
                                 <option value="2" selected="selected">货到付款                </option>
@@ -59,7 +59,7 @@
                 </tr>
             </table>
         </div>
-        <div class="pay-btn mt30"><a href="{::url('Pay/alipay',array('id'=>$order['order_id']))}" class="checkout-btn">立即付款</a></div>
+        <div class="pay-btn mt30"><a href="{:url('Pay/alipay',array('id'=>$order['order_id']))}" class="checkout-btn">立即付款</a></div>
     </div>
 </div>
 <!-- 主体结束 -->

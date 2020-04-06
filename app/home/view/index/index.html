@@ -35,9 +35,11 @@
                     <b>&gt;</b>
                     <a href="{:url('Index/cate',array('cate_id'=>$v['cate_id']))}">{$v.cate_name}</a>
                     <div>
+                        <notempty name="v.child">
                         <foreach name="v.child" item="vv">
                             <a href="{:url('Index/cate',array('cate_id'=>$vv['cate_id']))}">{$vv.cate_name}</a>
                         </foreach>
+                        </notempty>
                     </div>
                 </li>
             </foreach>

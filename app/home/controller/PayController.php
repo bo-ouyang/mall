@@ -6,28 +6,30 @@
  * Time: 14:29
  */
 
-namespace app\home\Controller;
+namespace app\home\controller;
+use app\common\model\OrderModel;
+use think\facade\View;
 use Yansongda\Pay\Pay as YPay;
 use Yansongda\Pay\Log as YLog;
-class Pay extends CheckLogin {
+class PayController extends CheckLogin {
         public function index(){
             $order_id = input('id');
             $order = model('common/Order');
-            $oi = $order->field('order_amount,payment_method')->where(['order_id'=>$order_id])->find();
-            $oi['order_id'] = $order_id;
+            $oi = $order->field('order_amount,payment_method,order_sn')->where(['order_sn'=>$order_id])->find();
+            $oi['order_sn'] = $order_id;
             print_r($oi);
             if($this->request->isPost()){
                 $pid = input('change_payment');
-                $order->where(array('order_id'=>$order_id))->setField(array('payment_method'=>$pid));
+                $order->where(array('order_sn'=>$order_id))->setField(array('payment_method'=>$pid));
                 $this->redirect('Pay/index',array('id'=>$order_id));
             }
             $this->assign('order',$oi);
-            $this->display();
+            return View::fetch();
         }
     public function alipay(){
         $Order = model('common/Order');
         $order_id = input('id');
-        $order_amount =$Order->where(array('order_id'=>$order_id))->value('order_amount')  ;
+        $order_amount =$Order->where(array('order_sn'=>$order_id))->value('order_amount')  ;
         //构造参数
         $aliConfig = config('alipay');
         $order = array(
@@ -35,13 +37,13 @@ class Pay extends CheckLogin {
             'total_amount' => $order_amount,
             'subject' => 'test 测试',
         );
-        $alipay = Pay::alipay($aliConfig)->web($order);
+        $alipay = YPay::alipay($aliConfig)->web($order);
         return $alipay->send();// laravel 框架中请直接 `return $alipay`
     }
     public function notify() {
-        $Order = D('order');
-        $aliConfig = C('alipay');
-        $alipay = Pay::alipay($aliConfig);
+        $Order = new OrderModel();
+        $aliConfig = config('alipay');
+        $alipay = YPay::alipay($aliConfig);
         try{
             $data = $alipay->verify(); // 是的，验签就这么简单！
             // 请自行对 trade_status 进行判断及其它逻辑进行判断，在支付宝的业务通知中，只有交易通知状态为 TRADE_SUCCESS 或 TRADE_FINISHED 时，支付宝才会认定为买家付款成功。
@@ -68,7 +70,7 @@ class Pay extends CheckLogin {
             }
             //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
             echo "success";	//请不要修改或删除
-            Log::debug('Alipay notify', $data->all());
+            YLog::debug('Alipay notify', $data->all());
         }   catch (Exception $e) {
             $e->getMessage();
         }

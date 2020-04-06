@@ -13,6 +13,7 @@ use app\common\model\GoodsCateModel;
 use app\common\model\GoodsCateAttrModel;
 use app\common\model\GoodsCateBrandModel;
 use cmf\controller\AdminBaseController;
+use think\Db;
 use think\facade\Request;
 
 class CategoryController extends AdminBaseController {
@@ -24,22 +25,27 @@ class CategoryController extends AdminBaseController {
     }
     public function cate_add(){
 
-        $data['cates'] = getTree(GoodsCateModel::field('cate_id,cate_name,parent_id')->select()->toArray());
+        $data['cates'] = getTree(Db::name('goods_cate')->select());
         $data['brand'] =BrandModel::field('brand_id,brand_name')->select();
         $this->assign('data', $data);
-      return  $this->display('goods/cate_add');
+        return  $this->fetch('goods/cate_add');
     }
     public function categoryAddPost(){
 	    if(Request::isPost()) {
 		    $data = Request::post();
 		    $brands = input('brands');
 		    unset($_POST['brands']);
-		    $ret = GoodsCateModel::create($data);
-		    if($ret->cate_id){
-			    foreach ($brands as $v){
-				    GoodsCateBrandModel::insert(array('cate_id'=>$ret,'brand_id'=>$v));
-			    }
-			    $this->success('分类添加成功',url('GCate/index'));
+		    GoodsCateModel::init();
+		    $ret = GoodsCateModel::insert($data);
+		    dump($ret);
+		    if($ret){
+		        if(!empty($brands)){
+                    foreach ($brands as $v){
+                        GoodsCateBrandModel::insert(array('cate_id'=>$ret,'brand_id'=>$v));
+                    }
+                }
+
+			    $this->success('分类添加成功',url('category/index'));
 		    }else{
 			    $this->error('分类添加失败');
 		    }

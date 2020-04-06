@@ -6,12 +6,17 @@
  * Time: 12:14
  */
 
-namespace app\home\Controller;
+namespace app\home\controller;
 use think\Db;
 use think\facade\View;
 
 class CartController extends CheckLogin {
-        public function cart(){
+    public function __construct()
+    {
+        return parent::__construct();
+    }
+
+    public function cart(){
         	    $UserCart = model('common/UserCart');
                 if(session('?username')){
                     $user_id = session('uid');
@@ -23,6 +28,7 @@ class CartController extends CheckLogin {
                 if($step==''){
                     if(!empty($goods)) {
                         $cart = service('home/GoodsCart')->getCartList($goods);
+                        //print_r($cart);
                         View::assign('cart', $cart);
                     }
                     //dump($cart);
@@ -92,17 +98,15 @@ class CartController extends CheckLogin {
                 echo json_encode(array('status'=>'success','data'=>$info));
             }
         }
-	/**
-	 * @throws \think\Exception
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\ModelNotFoundException
-	 * @throws \think\exception\DbException
-	 * @throws \think\exception\PDOException
-	 */
+
         //订单
         public function confirm(){
             //print_r(cookie('cart'));
             $user_id = session('uid');//用户id
+
+            if(!$user_id){
+                return redirect('user/login');
+            }
             if(input('step')=='shipping'){//运费获取
                 $ship = request()->post();
                 $fee = Db::name('shipping_method')->where(array('id'=>$ship['shipping_method']))->find();
@@ -114,21 +118,21 @@ class CartController extends CheckLogin {
                 $order = model('common/Order');//订单表
                 $orderGoods = model('common/order_goods');//订单商品表
                 $Goods = model('common/Goods');//商品表
-	            $UserCart = model('common/UserCart');
-                $order_id = model('common/Order')->getOrderId();//获取订单id
-                $goods = $UserCart->where(array('user_id'=>$user_id))->select();
+	            //$UserCart = model('common/UserCart');
+                $order_sn = get_order_sn();
+                $goods = Db::name('user_cart')->where(array('user_id'=>$user_id))->select()->toArray();
                 foreach ($goods as $v){
                     $go[$v['goods_info']] = $v['goods_qty'];
                 }
-                $data['cart'] = $UserCart->getInfo($go);
+               // print_r($goods);
+                $data['cart'] =  service('home/GoodsCart')->getCartList($go);
                 //运费获取
                 $fee =  Db::name('shipping_method')->where(array('id'=>$info['shipping_method']))->find();
                 $fee['params']=json_decode($fee['params'],true);
-                //print_r($data['cart']);print_r($info);
-                //$order_goods->startTrans();
+
                 //订单添加到数据库
                 $oi = [
-                    'order_id'=>$order_id,
+                    'order_sn'=>$order_sn,
                     'user_id'=>$user_id,
                     'shipping_method'=>$info['shipping_method'],
                     'payment_method'=>$info['payment_method'],
@@ -140,45 +144,54 @@ class CartController extends CheckLogin {
                     'created_date'=>time(),
                     'payment_date'=>'',
                     'thirdparty_trade_id'=>'',
+                    'expired_date'=>time()+15*60
                 ];
                 //订单联系人信息
                 $consignee = Db::name('user_consignee')->where(array('id'=>$info['consignee_id']))->find();
-                $consignee['order_id'] = $order_id;
+                $consignee['order_sn'] = $order_sn;
                 unset($consignee['user_id']);
                 unset($consignee['id']);
                 unset($consignee['is_default']);
+                print_r($consignee);
 	            Db::name('order_consignee')->insert($consignee);
+	            $order->startTrans();
+	            $orderGoods->startTrans();
                 //订单商品信息添加
-
+                    print_r($data['cart']['ret']);
+                    //die();
                     foreach ($data['cart']['ret'] as $v){
-                        $og = [
-                            'order_id'=>$order_id,
+                        $og[] = [
+                            'order_id'=>$order_sn,
                             'goods_id'=>$v['goods']['goods_id'],
-                            'goods_optional'=>isset($v['opts'])?json_encode($v['opts']):'',
+                            'goods_optional'=>empty($v['opt']) ? '' : implode('-',$v['opt']),
                             'goods_name'=>$v['goods']['goods_name'],
-                            'goods_image'=>$v['goods']['goods_image'][0],
-                            'goods_qty'=>$v['qty'],
+                            'goods_image'=>$v['goods']['goods_image'],
+                            'goods_qty'=>$v['goods_qty'],
                             'goods_price'=>$v['goods']['now_price']+$v['opt_price']+$fee['params'][0]['charges'],
+                            'discount_price'=>0,
+                            'goods_optional_price'=>$v['opt_price']
                         ];
                         $where = [
                             'goods_id'=>$v['goods']['goods_id'],
-                            'stock_qty'=>array('EGT',$v['qty'])
+                            'stock_qty'=>array('EGT',$v['goods_qty'])
                         ];
                         //更新库存
-                        if(!$Goods->where($where)->setDec('stock_qty',$v['qty'])){
-                            //$order_goods->rollback();
-	                        $orderGoods->where(['order_id'=>$order_id])->delete();
-                            $this->error('商品'.$v['goods']['goods_name'].'库存不足');
+                        if(!Db::name('goods')->where($where)->dec('stock_qty',$v['goods_qty'])){
+                            $order_goods->rollback();
+	                        $orderGoods->where(['order_sn'=>$order_sn])->delete();
+                            $this->error('商品'.$v['goods']['goods_id'].$v['goods']['goods_name'].'库存不足');
                         }
-	                    $orderGoods->save($og);
+
                 }
+                $orderGoods->saveAll($og);
                 if(!$order->insert($oi)){
+                    $order->rollback();
                     $this->error('订单失败');
                 }
 	            $orderGoods->commit();
                 cookie('cart',null);
-                $UserCart->where(['user_id'=>$user_id])->delete();
-                $this->redirect('Pay/index?id='.$order_id);
+                Db::name('user_cart')->where(['user_id'=>$user_id])->delete();
+                $this->redirect('Pay/index?id='.$order_sn);
             }else{
                 //订单确认
                 $consignee = Db::name('user_consignee');

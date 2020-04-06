@@ -7,7 +7,7 @@
  */
 
 namespace app\admin\Controller;
-class GReview extends  Common {
+class GoodsReview extends  Common {
     public function review(){
         $this->display('Goods/review');
     }

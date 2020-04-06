@@ -7,17 +7,28 @@
  */
 
 namespace app\common\model;
+
 use think\Model;
+
 class GoodsCateModel extends Model {
 
 			/*public function GoodsCateAttr(){
 				$this->belongsTo('common/GoodsCate');
 			}*/
+			public static  function init(){
+                self::event('before_insert', function ($goodscate) {
+                    $ret = GoodsCateModel::where(['cate_name'=>$goodscate->cate_name])->find();
+                    if($ret){
+                        return false;
+                    }
+                });
+            }
             public function getBrand($cate_id){
 
             }
             public function toArray() {
 
             }
+
 
 }

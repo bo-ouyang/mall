@@ -15,6 +15,7 @@ use app\common\model\GoodsCateModel;
 use app\common\model\GoodsOptionalModel;
 use app\common\model\GoodsOptionalTypeModel;
 use cmf\controller\AdminBaseController;
+use think\Db;
 use think\facade\Request;
 
 class GoodsController extends AdminBaseController
@@ -28,14 +29,17 @@ class GoodsController extends AdminBaseController
     public function index_data()
     {
         $GCate = model('common/GoodsCate');
+        $limit = \request()->get('limit');
+        $offset = \request()->get('offset');
         $data['cates'] = getTree($GCate->field('cate_id,cate_name,parent_id')->select());
         $data['brand'] = model('common/Brand')->field('brand_id,brand_name')->select();
-        $goods = GoodsModel::select()->withAttr('cate_id', function ($value, $data) {
+        $count = Db::name('goods')->count('goods_id');
+        $goods = GoodsModel::limit($offset,$limit)->select()->withAttr('cate_id', function ($value, $data) {
             return GoodsCateModel::where(['cate_id' => $value])->value('cate_name');
         })->withAttr('brand_id', function ($value, $data) {
             return BrandModel::where(['brand_id' => $value])->value('brand_name');
         });
-        return json(['rows' => $goods, 'total' => count($goods)]);
+        return json(['rows' => $goods, 'total' => $count]);
     }
 
     //商品添加

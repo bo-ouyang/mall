@@ -43,8 +43,8 @@
                 <table width="100%" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                         <th colspan="4">
-                            <div class="fl aln-l cut">订单号：<b>{$v.order_id}</b><span class="sep"></span>下单日期：<b>{:date('y-m-d',$v['created_date'])}</b></div>
-                            <div class="fr"><a href="{:url('Order/view',array('id'=>$v['order_id']))}">订单详情</a></div>
+                            <div class="fl aln-l cut">订单号：<b>{$v.order_sn}</b><span class="sep"></span>下单日期：<b>{:date('y-m-d',$v['created_date'])}</b></div>
+                            <div class="fr"><a href="{:url('Order/view',array('id'=>$v['order_sn']))}">订单详情</a></div>
                         </th>
                     </tr>
 
@@ -55,9 +55,9 @@
                                 <dt><a href="{:url('Item/Index',array('goods_id'=>$vv['goods_id']))}" target="_blank"><img class="gim" src="/static/Uploads/50/{$vv['goods_image']}" /></a></dt>
                                 <dd>
                                     <p><a href="{:url('Item/Index',array('goods_id'=>$vv['goods_id']))}" target="_blank">{$vv.goods_name}</a></p>
-                                    <notempty name="vv.goods_optional">
-                                    <p class="c999 mt5"><foreach name="vv.goods_optional" item="vvv" key="kkk"><span class="mr5">[{$kkk}: <font class="c666">{$vvv}</font>]</span></foreach></p>
-                                    </notempty>
+                                    <neq name="vv.goods_optional" value=" ">
+                                    <p class="c999 mt5"><span class="mr5">[{$vv.goods_optional}]</span></p>
+                                    </neq>
                                     <p class="mt5"><span class="c999 mr5">单价：</span><font class="cny">¥</font> {$vv.goods_price}</p>
                                     <p class="mt5"><span class="c999 mr5">数量：</span>{$vv.goods_qty}</p>
                                 </dd>
@@ -71,17 +71,18 @@
                             <!-- 未付款 -->
                             <if condition="($v.order_status eq 0)">
                                 <if condition="($v.payment_method eq 1) OR ($v.payment_method eq 3)">
-                                    <p><a class="sm-red btn" href="{:url('Pay/index',array('id'=>$v['order_id']))}">立即付款</a></p>
+                                    <p><a class="sm-red btn" href="{:url('Pay/index',array('id'=>$v['order_sn']))}">立即付款</a>  </p>
                                 </if>
-                                <p class="mt10"><button type="button" class="sm-gray btn" onclick="cancelOrder(this, {$v.order_id})">取消订单</button></p>
+                                <p class="mt10"><button type="button" class="sm-gray btn" onclick="cancelOrder(this, {$v.order_sn})">取消订单</button></p>
                             </if>
                             <!-- 以付款 -->
                             <if condition="($v.order_status eq 1)">
-                                <p class="mt10"><button type="button" class="sm-gray btn" onclick="cancelOrder(this, {$v.order_id})">取消订单</button></p>
+                                <p class="mt10"><button type="button" class="sm-gray btn" onclick="cancelOrder(this, {$v.order_sn})">取消订单</button></p>
                             </if>
                             <!-- 订单取消 -->
                             <if condition="($v.order_status eq 2)">
-                                <p><a class="sm-blue btn" href="{:url('Order/rebuy',array('id'=>$v['order_id']))}">重新购买</a></p>
+                                <p><a class="sm-blue btn" href="{:url('Order/rebuy',array('id'=>$v['order_sn']))}">重新购买</a></p>
+
                             </if>
                         </td>
                     </tr>
@@ -95,4 +96,4 @@
     </div>
 </div>
 <!-- 右侧结束 -->
-        <include file="User/bott"/>
+        <include file="user/bott"/>

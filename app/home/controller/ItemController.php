@@ -5,7 +5,7 @@
  * Date: 2018/11/21
  * Time: 11:34
  */
-namespace app\home\Controller;
+namespace app\home\controller;
 use app\common\model\GoodsAlbumModel;
 use app\common\model\GoodsModel;
 use think\facade\Cookie;
@@ -27,12 +27,13 @@ class ItemController extends CheckLogin {
             $data['info'] = GoodsModel::get($goods_id)->withAttr('goods_image',function ($value,$data){
                 return Request::domain().GoodsModel::IMAGE_RUL.'350/'.$value;
             });
-          //  print_r($data['info']);
+           print_r($cart);
             $data['type'] = service('home/Goods')->getGoodsOptional($goods_id);
             $data['attr'] = service('home/Goods')->getGoodsAttr($goods_id);
             $data['cate'] = cate_parent($cates,$data['info']['cate_id']);
             View::assign('data',$data);
-            return View::fetch('index');
+
+            return  View::fetch();
         }
         public function add(){
             if(request()->isPost()){
@@ -52,7 +53,7 @@ class ItemController extends CheckLogin {
                     $user_id = session('uid');
                     //echo $key;
                     $userCardGoods = $UserCart->where(['user_id'=>$user_id,'goods_info'=>$key])->findOrEmpty();
-	                $user_cart = $UserCart->where(['user_id'=>$user_id,'goods_info'=>$key])->select();
+	                $user_cart = $UserCart->where(['user_id'=>$user_id,'goods_info'=>$key])->find();
                     if(!empty($user_cart)){//如果原先购物车有商品
                         if(!empty($userCardGoods)){
 	                        $UserCart->where(['goods_info'=>$key,'user_id'=>$user_id])->setInc('goods_qty',$info['qty']);
@@ -60,7 +61,8 @@ class ItemController extends CheckLogin {
                             $temp = [
                                 'user_id'=>$user_id,
                                 'goods_qty'=>$info['qty'],
-	                            'goods_info'=>$key
+	                            'goods_info'=>$key,
+                                'shop_id'=>0
                             ];
                             if(!$UserCart->save($temp)){
                             	echo "<script>alert('购物车添加失败') </script>";

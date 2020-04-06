@@ -14,7 +14,7 @@ class GoodsModel extends Model {
         const IMAGE_RUL = '/static/Uploads/';
 
 		protected $pk = 'goods_id';
-
+        protected $table = 'verydows_goods';
 		public function goodscate(){
 			return $this->hasMany('GoodsCateModel');
 		}

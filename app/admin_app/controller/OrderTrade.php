@@ -7,7 +7,7 @@
  */
 
 namespace app\admin\Controller;
-class OTrade extends  Common {
+class OrderTrade extends  Common {
     public function trade(){
     	return $this->display('Goods/shipping_list');
     }

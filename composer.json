@@ -26,7 +26,9 @@
         "topthink/think-image": "^1.0",
         "thinkcmf/cmf-app": "~5.1.0",
         "thinkcmf/cmf-install": "~5.1.0",
-        "thinkcmf/cmf-api": "~5.1.0"
+        "thinkcmf/cmf-api": "~5.1.0",
+        "yansongda/pay": "^2.9",
+        "predis/predis": "^1.1"
     },
     "extra": {
         "think-path": "vendor/thinkphp",

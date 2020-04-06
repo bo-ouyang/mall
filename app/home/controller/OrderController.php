@@ -6,22 +6,24 @@
  * Time: 15:07
  */
 
-namespace app\home\Controller;
-class Order extends CheckLogin {
+namespace app\home\controller;
+use think\facade\View;
+
+class OrderController extends CheckLogin {
         public function index(){
             $trade= input('out_trade_no','');
             $user_id = session('uid');
 	        $Order = new \app\common\model\OrderModel();
             $od = $Order->getOrderByUserId($user_id);
             foreach ($od as $k=>$v){
-                $od[$k]['goods_info'] = $Order->getOrderGoods($v['order_id']);
+                $od[$k]['goods_info'] = $Order->getOrderGoods($v['order_sn'])->toArray();
             }
             if($trade!=''){
-	            $Order->where(['order_id'=>$trade])->setField(array('order_status'=>1));
+	            $Order->where(['order_sn'=>$trade])->setField(array('order_status'=>1));
             }
-            //print_r($od);
+            print_r($od);
             $this->assign('order',$od);
-            return $this->fetch();
+            return View::fetch();
         }
         public function view(){
             $order_id = input('id');

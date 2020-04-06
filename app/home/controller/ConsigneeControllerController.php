@@ -11,7 +11,7 @@ namespace app\home\Controller;
 
 use think\Db;
 
-class ConsigneeController extends CheckLogin {
+class Consignee extends CheckLogin {
     //收货地址
     public function consignee(){
         //print_r($_POST);

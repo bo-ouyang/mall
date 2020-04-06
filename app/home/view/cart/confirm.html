@@ -39,7 +39,7 @@
                         $.ajax({
                             type: "post",
                             dataType: "text",
-                            url: "{::url('Cart/confirm',array('step'=>'shipping'))}",
+                            url: "{:url('Cart/confirm',array('step'=>'shipping'))}",
                             data: {'shipping_method':$(this).val(), 'consignee_id':consignee_id},
                             success: function(data){
                                 if(data >= 0) {
@@ -229,7 +229,7 @@
                             <a href="{:url('Item/index',array('goods_id'=>$v['goods_id']))}" target="_blank">
                                 <img class="gim"
                                 <eq name="v['goods']['goods_image']" value=" null ">
-                                    src=""<else/>src="/static/Uploads/50/{$v['goods']['goods_image'][0]}"</eq> />
+                                    src=""<else/>src="/static/Uploads/50/{$v['goods']['goods_image']}"</eq> />
                             </a>
                         </td>
                         <td>

@@ -20,6 +20,7 @@ use think\Db;
  */
 //获取分类列表
 function getTree($arr, $pid = 0, $lev = 0) {
+    //dump($arr);
 	$data = array();
     //print_r($arr);
 	foreach ($arr as $v) {
@@ -32,7 +33,14 @@ function getTree($arr, $pid = 0, $lev = 0) {
 	}
 	return $data;
 }
-
+/**
+ * 获取惟一订单号
+ * @return string
+ */
+function get_order_sn()
+{
+    return date('Ymd') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
+}
 //根据id获取所有子类id
 function getCate_ChildId($data, &$ret, $id = 0) {
 	$ret[] = (int)$id;

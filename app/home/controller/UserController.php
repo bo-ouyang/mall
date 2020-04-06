@@ -31,7 +31,7 @@ class UserController extends CheckLogin {
             $user_id=session('uid');
             return json(['username'=>$user,'user_id'=>$user_id,'status'=>1,'avatar'=>$avatar]);
         }else{
-	        return json(['status'=>0]);
+            return json(['status'=>0]);
         }
     }
     public function cartbar(){
@@ -95,7 +95,8 @@ class UserController extends CheckLogin {
     }
     //登陆
     public function login(){
-    	echo md5("ROOT002");
+    	//echo md5("ROOT002");
+        var_dump($_SESSION);
 	    return View::fetch();
     }
     public function loginPost(){
@@ -105,24 +106,27 @@ class UserController extends CheckLogin {
 		    $password = input('password');
 		    $value  = input('captcha');
 		    $stay = input('stay','');
+
+		    var_dump($value);
 		    $captcha  = new Captcha();
 		    if( !$captcha->check($value))
 		    {
 			    $this->error('验证码错误');
 		    }
 		   // echo $user->where(['username'=>$username])->value('password');die();
-		    if(md5($password)==$user->where(['username'=>$username])->value('password')){
-			    $user= $user->where(['username'=>$username])->field('user_id,username,avatar')->find();
+
+		    if( cmf_compare_password($password,$user->where(['user_login'=>$username])->value('user_pass'))){
+			    $user= $user->where(['user_login'=>$username])->field('id,user_login,avatar')->find();
 				if($stay){
 					Cookie::set('xx-username',$username);
 				}else{
-					Session::set('uid',$user['user_id']);
+					Session::set('uid',$user['id']);
 					Session::set('username',$username);
 					Session::set('avatar',$user['avatar']);
 				}
 			    $cart = cookie('cart');
 			    if(!empty($cart)){//如果cookie不为空
-				    $user_cart = Db::name('user_cart')->field('goods_info,goods_qty')->where(array('user_id'=>$user['user_id']))->select();
+				    $user_cart = Db::name('user_cart')->field('goods_info,goods_qty')->where(array('user_id'=>$user['id']))->select();
 				    if(!empty($user_cart)){
 					    //判断商品是否已经存在
 					    foreach ($cart as $k=>$v){
@@ -135,7 +139,7 @@ class UserController extends CheckLogin {
 					    }
 					    $i=0;
 					    foreach ($cart as $k=>$v){
-						    $tem[$i]['user_id'] = $user['user_id'];
+						    $tem[$i]['user_id'] = $user['id'];
 						    $tem[$i]['goods_info'] = $k;
 						    $tem[$i]['goods_qty'] = $v;
 						    $i++;
@@ -143,7 +147,7 @@ class UserController extends CheckLogin {
 				    }else{
 					    $i=0;
 					    foreach ($cart as $k=>$v){
-						    $tem[$i]['user_id'] = $user['user_id'];
+						    $tem[$i]['user_id'] = $user['id'];
 						    $tem[$i]['goods_info'] = $k;
 						    $tem[$i]['goods_qty'] = $v;
 						    $i++;

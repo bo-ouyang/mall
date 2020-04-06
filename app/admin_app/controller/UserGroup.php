@@ -9,6 +9,6 @@
 namespace app\admin\Controller;
 
 
-class OLog extends Common {
-    public function index(){$this->display('Order/log_list');}
+class UserGroup extends Common {
+    public function user_group(){$this->display();}
 }

@@ -10,6 +10,7 @@ class GoodsCart {
 	public function getCartList($goods){
 		$tempGoods =[];
 		$total_amount=0;
+		//print_r($goods);
 		if(!empty($goods)){
 			foreach ($goods as $k=>$v){
 				$kss = explode('_',$k);
@@ -22,6 +23,7 @@ class GoodsCart {
 
 				];
 			}
+			//print_r($tempGoods);
 			foreach ($tempGoods as $k=>$v){
 				$tempGoods[$k]['goods']= model('common/Goods')->where(['goods_id'=>$v['goods_id']])->field('goods_id,goods_name,now_price,goods_image,stock_qty')->find()->toArray();
 					if(!empty($v['goods_optional'])){
@@ -33,6 +35,7 @@ class GoodsCart {
 							$tempGoods[$k]['opt'][$type_namee]  = model('common/GoodsOptional')->where(['id'=>$vv])->value('opt_text');
 						}
 						$tempGoods[$k]['com_price'] = $opt_price+$tempGoods[$k]['goods']['now_price'];
+                        $tempGoods[$k]['opt_price'] = $opt_price;
 					}
 				$total_amount += $tempGoods[$k]['com_price']*$v['goods_qty'];
 			}
